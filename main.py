@@ -136,8 +136,22 @@ class roiCalc():
                 summary = input(
                     "\nWould you like a summary of the calculations? (y/n)")
             else:
-                pass
+                self.showSummary()
         return askROI
+
+    def showSummary(self):
+        print("Summary of Calculations\n")
+        print("Part 1: General Info\nProperty Name: {}\nProperty Value: ${}\n".format(
+            self.Name.title(), self.PropertyValue))
+        print("Part 2: Initial Investment Costs\n")
+        print("Part 3: Monthly Income\n")
+        print("Part 4: Monthly Expenses\n")
+        print("==========================\nMonthly Cash Flow = ${:.2f}\nCash on Cash Return on Investment = {:.2f}%".format(
+            self.Cashflow, self.ROI))
+        pass
+
+    def checkInt(self, ui):
+        pass
 
 
 prop1 = roiCalc()
