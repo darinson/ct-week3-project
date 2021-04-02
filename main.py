@@ -122,7 +122,7 @@ class roiCalc():
     def cal_roi(self):
         annual_cashflow = 12 * self.Cashflow
         askROI = 100 * annual_cashflow / self.Investment
-        print("Your cash on cash ROI is {:.2f}%.".format(str(askROI)))
+        print("Your cash on cash ROI is {:.2f}%.".format(askROI))
         summary = input(
             "\nWould you like a summary of the calculations? (y/n)")
         while summary.lower() != "n":
@@ -146,7 +146,7 @@ class roiCalc():
 
     def checkNum(self, prompt):
         valueNum = input(prompt)
-        while not valueNum.isdigit():
+        while not valueNum.isdigit():  # not working for decimal points?? ... consider using regex
             valueNum = input("Please enter a numeric value. " + prompt)
         return float(valueNum)
 
