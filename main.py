@@ -5,7 +5,8 @@ class roiCalc():
         print("\nPart 1/4: General Information")
         self.Name = input("What is your property name? ")
         # property taxes use assessed value
-        self.PropertyValue = input("What is the value of your property? $")
+        self.PropertyValue = self.checkNum(
+            "What is the value of your property? $")
 
         print("\nPart 2/4: Initial Investment Costs")
         self.Investment = self.cal_investment()
@@ -42,13 +43,11 @@ class roiCalc():
                     "Would you like to add another source of income? (y/n) ")
 
         for key in dict_income:
-            ask_value = input(
+            ask_value = self.checkNum(
                 f"Please enter your monthly earnings from {key}: $")
-            while not ask_value.isdigit():
-                ask_value = input(f"Please enter a valid value of {key}: $")
             dict_income[key] = ask_value
 
-        askIncome = sum(int(costs) for x, costs in dict_income.items())
+        askIncome = sum(float(costs) for x, costs in dict_income.items())
         return askIncome
 
     def cal_expenses(self):
@@ -76,17 +75,15 @@ class roiCalc():
 
         for key in dict_expenses:
             if "rate" in key.lower():
-                ask_value = input(f"Please enter the monthly {key}:" + "%")
+                ask_value = self.checkNum(
+                    f"Please enter the monthly {key}:" + "%")
                 ask_value *= self.PropertyValue
             else:
-                ask_value = input(
+                ask_value = self.checkNum(
                     f"Please enter your monthly earnings from {key}: $")
-            while not ask_value.isdigit():
-                ask_value = input(
-                    f"Please enter a valid value for monthly {key}: $")
             dict_expenses[key] = ask_value
 
-        askExpenses = sum(int(costs) for x, costs in dict_expenses.items())
+        askExpenses = sum(float(costs) for x, costs in dict_expenses.items())
         return askExpenses
 
     def cal_cashflow(self):
@@ -116,9 +113,7 @@ class roiCalc():
                     "Would you like to add another type of investment cost? (y/n) ")
 
         for key in dict_inv:
-            ask_value = input(f"Please enter the value of {key}: $")
-            while not ask_value.isdigit():
-                ask_value = input(f"Please enter valid value of {key}: $")
+            ask_value = self.checkNum(f"Please enter the value of {key}: $")
             dict_inv[key] = ask_value
 
         askInvestment = sum(float(costs) for x, costs in dict_inv.items())
@@ -148,10 +143,13 @@ class roiCalc():
         print("Part 4: Monthly Expenses\n")
         print("==========================\nMonthly Cash Flow = ${:.2f}\nCash on Cash Return on Investment = {:.2f}%".format(
             self.Cashflow, self.ROI))
-        pass
 
-    def checkInt(self, ui):
-        pass
+    def checkNum(self, prompt):
+        valueNum = input(prompt)
+        while not valueNum.isdigit():
+            valueNum = input("Please enter a numeric value. " + prompt)
+        return float(valueNum)
 
 
 prop1 = roiCalc()
+print(prop1.PropertyValue)
