@@ -1,3 +1,6 @@
+import re
+
+
 class roiCalc():
 
     def __init__(self):
@@ -52,8 +55,8 @@ class roiCalc():
 
     def cal_expenses(self):
         dict_expenses = {
-            "Property Tax Rate": 0,
-            "Insurance Rate": 0,
+            "Property Tax": 0,
+            "Insurance": 0,
             "Utilities": 0,
             "HOA Fees": 0,
             "Vacancy": 0
@@ -74,14 +77,14 @@ class roiCalc():
                     "Would you like to add another type of expense? (y/n) ")
 
         for key in dict_expenses:
-            if "rate" in key.lower():
-                ask_value = self.checkNum(
-                    f"Please enter the monthly {key}:" + "%")
-                ask_value *= self.PropertyValue
-            else:
-                ask_value = self.checkNum(
-                    f"Please enter your monthly earnings from {key}: $")
-            dict_expenses[key] = ask_value
+            # if "rate" in key.lower():
+            #     ask_value = self.checkNum(
+            #         f"Please enter the monthly {key}:" + "%")
+            #     ask_value *= self.PropertyValue / 100
+            # else:
+            ask_value = self.checkNum(
+                f"Please enter your monthly expenses for {key}: $")
+        dict_expenses[key] = ask_value
 
         askExpenses = sum(float(costs) for x, costs in dict_expenses.items())
         return askExpenses
@@ -146,7 +149,8 @@ class roiCalc():
 
     def checkNum(self, prompt):
         valueNum = input(prompt)
-        while not valueNum.isdigit():  # not working for decimal points?? ... consider using regex
+        patNum = re.compile("^[\d]+\.*[\d]*")
+        while not patNum.search(valueNum):
             valueNum = input("Please enter a numeric value. " + prompt)
         return float(valueNum)
 
