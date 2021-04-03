@@ -25,9 +25,10 @@ class roiCalc():
 
         print("\nCalculating cash on cash return on investment...")
         self.ROI = self.cal_roi()
+        self.showSummary()
 
     def cal_income(self):
-        dict_income = {
+        self.dict_income = {
             "Rent": 0
         }
         print("Monthly Income = money you earn from the property every month.")
@@ -41,28 +42,29 @@ class roiCalc():
             else:
                 new_key = input(
                     "What source of income would you like to include? ")
-                dict_income[new_key] = 0
+                self.dict_income[new_key] = 0
                 other_inputs = input(
                     "Would you like to add another source of income? (y/n) ")
 
-        for key in dict_income:
+        for key in self.dict_income:
             ask_value = self.checkNum(
                 f"Please enter your monthly earnings from {key}: $")
-            dict_income[key] = ask_value
+            self.dict_income[key] = ask_value
 
-        askIncome = sum(float(costs) for x, costs in dict_income.items())
+        askIncome = sum(float(costs) for x, costs in self.dict_income.items())
         return askIncome
 
     def cal_expenses(self):
-        dict_expenses = {
-            "Property Tax": 0,
+        self.dict_expenses = {
+            "Property Tax": 0,  # account for rate vs. value?
             "Insurance": 0,
+            "Mortgage": 0,
             "Utilities": 0,
             "HOA Fees": 0,
             "Vacancy": 0
         }
         print("Monthly Expenses = what you pay for the property every month.")
-        print("This includes property tax, insurance, utility bills, HOA fees, vacancy.")
+        print("This includes property tax, insurance, mortgage, utility bills, HOA fees, vacancy.")
         other_inputs = input(
             "Are there other types of expenses you would like to include? (y/n) ")
         while other_inputs.lower() != "n":
@@ -72,21 +74,23 @@ class roiCalc():
             else:
                 new_key = input(
                     "What type of expense would you like to include? ")
-                dict_expenses[new_key] = 0
+                self.dict_expenses[new_key] = 0
                 other_inputs = input(
                     "Would you like to add another type of expense? (y/n) ")
 
-        for key in dict_expenses:
+        for key in self.dict_expenses:
+            ask_value = self.checkNum(
+                f"Please enter your monthly expenses for {key}: $")
             # if "rate" in key.lower():
             #     ask_value = self.checkNum(
             #         f"Please enter the monthly {key}:" + "%")
             #     ask_value *= self.PropertyValue / 100
             # else:
-            ask_value = self.checkNum(
-                f"Please enter your monthly expenses for {key}: $")
-        dict_expenses[key] = ask_value
 
-        askExpenses = sum(float(costs) for x, costs in dict_expenses.items())
+        self.dict_expenses[key] = ask_value
+
+        askExpenses = sum(float(costs)
+                          for x, costs in self.dict_expenses.items())
         return askExpenses
 
     def cal_cashflow(self):
@@ -95,7 +99,7 @@ class roiCalc():
         return askCashFlow
 
     def cal_investment(self):
-        dict_inv = {
+        self.dict_inv = {
             "Down Payment": 0,
             "Repairs": 0,
             "Closing Costs": 0
@@ -111,49 +115,55 @@ class roiCalc():
             else:
                 new_key = input(
                     "What type of investment cost would you like to include? ")
-                dict_inv[new_key] = 0
+                self.dict_inv[new_key] = 0
                 other_inputs = input(
                     "Would you like to add another type of investment cost? (y/n) ")
 
-        for key in dict_inv:
+        for key in self.dict_inv:
             ask_value = self.checkNum(f"Please enter the value of {key}: $")
-            dict_inv[key] = ask_value
+            self.dict_inv[key] = ask_value
 
-        askInvestment = sum(float(costs) for x, costs in dict_inv.items())
+        askInvestment = sum(float(costs) for x, costs in self.dict_inv.items())
         return askInvestment
 
     def cal_roi(self):
         annual_cashflow = 12 * self.Cashflow
         askROI = 100 * annual_cashflow / self.Investment
         print("Your cash on cash ROI is {:.2f}%.".format(askROI))
+        return askROI
+
+    def showSummary(self):
         summary = input(
             "\nWould you like a summary of the calculations? (y/n)")
         while summary.lower() != "n":
-            summary = "n"
             if summary.lower() != "y":
                 summary = input(
                     "\nWould you like a summary of the calculations? (y/n)")
             else:
-                self.showSummary()
-        return askROI
+                print(
+                    "\n==========================Summary of Calculations==========================")
+                print("\nPart 1: General Info\nProperty Name: {}\nProperty Value: ${}".format(
+                    self.Name.title(), self.PropertyValue))
+                print("\nPart 2: Initial Investment Costs")
+                for key, value in self.dict_inv.items():
+                    print(f"{key.title()}: ${value}")
+                print("\nPart 3: Monthly Income")
+                for key, value in self.dict_income.items():
+                    print(f"{key.title()}: ${value}")
+                print("\nPart 4: Monthly Expenses")
+                for key, value in self.dict_expenses.items():
+                    print(f"{key.title()}: ${value}")
+                print("==========================\nMonthly Cash Flow = ${:.2f}\nCash on Cash Return on Investment = {:.2f}%".format(
+                    self.Cashflow, self.ROI))
 
-    def showSummary(self):
-        print("Summary of Calculations\n")
-        print("Part 1: General Info\nProperty Name: {}\nProperty Value: ${}\n".format(
-            self.Name.title(), self.PropertyValue))
-        print("Part 2: Initial Investment Costs\n")
-        print("Part 3: Monthly Income\n")
-        print("Part 4: Monthly Expenses\n")
-        print("==========================\nMonthly Cash Flow = ${:.2f}\nCash on Cash Return on Investment = {:.2f}%".format(
-            self.Cashflow, self.ROI))
+                summary = "n"
 
     def checkNum(self, prompt):
         valueNum = input(prompt)
-        patNum = re.compile("^[\d]+\.*[\d]*")
+        patNum = re.compile(r"^[\d]+\.*[\d]*")
         while not patNum.search(valueNum):
             valueNum = input("Please enter a numeric value. " + prompt)
         return float(valueNum)
 
 
 prop1 = roiCalc()
-print(prop1.PropertyValue)
