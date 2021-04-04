@@ -7,7 +7,6 @@ class roiCalc():
         print("\nHello, welcome to your return-on-investment (ROI) calculator.\nWe will calculate your cash on cash ROI by collecting some information.")
         print("\nPart 1/4: General Information")
         self.Name = input("What is your property name? ")
-        # property taxes use assessed value
         self.PropertyValue = self.checkNum(
             "What is the value of your property? $")
 
@@ -56,7 +55,7 @@ class roiCalc():
 
     def cal_expenses(self):
         self.dict_expenses = {
-            "Property Tax": 0,  # account for rate vs. value?
+            "Property Tax": 0,
             "Insurance": 0,
             "Mortgage": 0,
             "Utilities": 0,
@@ -81,13 +80,7 @@ class roiCalc():
         for key in self.dict_expenses:
             ask_value = self.checkNum(
                 f"Please enter your monthly expenses for {key}: $")
-            # if "rate" in key.lower():
-            #     ask_value = self.checkNum(
-            #         f"Please enter the monthly {key}:" + "%")
-            #     ask_value *= self.PropertyValue / 100
-            # else:
-
-        self.dict_expenses[key] = ask_value
+            self.dict_expenses[key] = ask_value
 
         askExpenses = sum(float(costs)
                           for x, costs in self.dict_expenses.items())
@@ -95,7 +88,7 @@ class roiCalc():
 
     def cal_cashflow(self):
         askCashFlow = self.Income - self.Expenses
-        print("Your monthly cash flow is ${}.".format(str(askCashFlow)))
+        print("Your monthly cash flow is ${:.2f}.".format(askCashFlow))
         return askCashFlow
 
     def cal_investment(self):
@@ -127,9 +120,10 @@ class roiCalc():
         return askInvestment
 
     def cal_roi(self):
-        annual_cashflow = 12 * self.Cashflow
-        askROI = 100 * annual_cashflow / self.Investment
+        self.AnnualCashflow = 12 * self.Cashflow
+        askROI = 100 * self.AnnualCashflow / self.Investment
         print("Your cash on cash ROI is {:.2f}%.".format(askROI))
+        self.YearsPayOff = 100/askROI
         return askROI
 
     def showSummary(self):
@@ -142,19 +136,19 @@ class roiCalc():
             else:
                 print(
                     "\n==========================Summary of Calculations==========================")
-                print("\nPart 1: General Info\nProperty Name: {}\nProperty Value: ${}".format(
+                print("\nPart 1: General Info\nProperty Name: {}\nProperty Value: ${:.2f}".format(
                     self.Name.title(), self.PropertyValue))
                 print("\nPart 2: Initial Investment Costs")
                 for key, value in self.dict_inv.items():
-                    print(f"{key.title()}: ${value}")
+                    print("{}: ${:.2f}".format(key.title(), value))
                 print("\nPart 3: Monthly Income")
                 for key, value in self.dict_income.items():
-                    print(f"{key.title()}: ${value}")
+                    print("{}: ${:.2f}".format(key.title(), value))
                 print("\nPart 4: Monthly Expenses")
                 for key, value in self.dict_expenses.items():
-                    print(f"{key.title()}: ${value}")
-                print("==========================\nMonthly Cash Flow = ${:.2f}\nCash on Cash Return on Investment = {:.2f}%".format(
-                    self.Cashflow, self.ROI))
+                    print("{}: ${:.2f}".format(key.title(), value))
+                print("\n==========================\nEach year, you have a net operating income of ${:.2f} from the property.\nWith your total investment of ${:.2f},\n\tyour cash on cash return on investment is {:.2f}% per year.\nWithout inflation, you will earn your investment back in {:.0f} years.".format(
+                    self.AnnualCashflow, self.Investment, self.ROI, self.YearsPayOff))
 
                 summary = "n"
 
