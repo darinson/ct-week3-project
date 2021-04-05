@@ -4,7 +4,7 @@ import re
 class roiCalc():
 
     def __init__(self):
-        print("\nHello, welcome to your return-on-investment (ROI) calculator.\nWe will calculate your cash on cash ROI by collecting some information.")
+        print("\n=============================================================\nHello, welcome to your return-on-investment (ROI) calculator.\nWe will calculate your cash on cash ROI by collecting some information.\n-------------------------------------------------------------")
         print("\nPart 1/4: General Information")
         self.Name = input("What is your property name? ")
         self.PropertyValue = self.checkNum(
